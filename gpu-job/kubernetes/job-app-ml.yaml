@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-amazing-job
+spec:
+  parallelism: 200
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - image: ghcr.io/kyryl-opens-ml/ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:pr-1
+          name: job-app-ml
+          
