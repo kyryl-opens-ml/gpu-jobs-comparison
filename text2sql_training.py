@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import json
 import logging
 from pathlib import Path
-
+import os
 import evaluate
 import torch
 from datasets import Dataset
@@ -213,43 +213,8 @@ def get_model(model_id: str, device_map):
 
 
 
-def train():
+def train(config):
 
-    config = {
-
-
-    "model_id": "microsoft/Phi-3-mini-4k-instruct",
-    "lora_r": 16,
-    "lora_alpha": 16,
-    "lora_dropout": 0.05,
-    "subsample": 0.1,
-
-    "output_dir": "/tmp/phi-3-mini-lora-text2sql",
-    "push_to_hub": True,
-    "eval_strategy": "steps",
-    "do_eval": True,
-    "optim": "adamw_torch",
-    "per_device_train_batch_size": 8,
-    "per_device_eval_batch_size": 8,
-    "gradient_accumulation_steps": 4,
-    "learning_rate": 0.0001,
-    "num_train_epochs": 3,
-    "warmup_ratio": 0.1,
-    "logging_first_step": True,
-    "logging_steps": 500,
-    "save_steps": 500,
-    "seed": 42,
-    "bf16": True,
-    "fp16": False,
-    "eval_steps": 500,
-    "report_to": [
-        "wandb"
-    ],
-    "lr_scheduler_type": "linear",
-    "log_level" : "debug",
-    "evaluation_strategy": "steps",
-    "eval_on_start": True
-    }
 
 
     setup_logger(logger)
@@ -304,6 +269,45 @@ def train():
     trainer.create_model_card()
 
 
+def train_end2end():
+    run_name = os.getenv("RUN_NAME", 'phi-3-mini-lora-text2sql-default')
+    config = {
+
+
+    "model_id": "microsoft/Phi-3-mini-4k-instruct",
+    "lora_r": 16,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05,
+    "subsample": 0.001,
+
+    "output_dir": run_name,
+    "push_to_hub": True,
+    "eval_strategy": "steps",
+    "do_eval": True,
+    "optim": "adamw_torch",
+    "per_device_train_batch_size": 8,
+    "per_device_eval_batch_size": 8,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 0.0001,
+    "num_train_epochs": 0.003,
+    "warmup_ratio": 0.1,
+    "logging_first_step": True,
+    "logging_steps": 500,
+    "save_steps": 500,
+    "seed": 42,
+    "bf16": True,
+    "fp16": False,
+    "eval_steps": 500,
+    "report_to": [
+        "wandb"
+    ],
+    "lr_scheduler_type": "linear",
+    "log_level" : "debug",
+    "evaluation_strategy": "steps",
+    "eval_on_start": True
+    }
+    train(config=config)
+
 if __name__ == '__main__':
-    train()    
+    train_end2end()
     
