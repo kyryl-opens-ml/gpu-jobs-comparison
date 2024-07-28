@@ -22,6 +22,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      # See explanation: https://github.com/orgs/community/discussions/25678 
+      - name: Clean disk
+        run: |
+          rm -rf /opt/hostedtoolcache
+      
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
@@ -35,15 +40,25 @@ jobs:
         with:
           images: ghcr.io/kyryl-opens-ml/gpu-jobs-comparison
 
-      # See explanation: https://github.com/orgs/community/discussions/25678 
-      - name: Clean disk
-        run: |
-          rm -rf /opt/hostedtoolcache
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+            ghcr.io/pickfordai/pickford-studio:latest
           labels: ${{ steps.meta.outputs.labels }}          
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache          
