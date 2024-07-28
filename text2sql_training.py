@@ -175,7 +175,7 @@ def train(config: Dict[str, Any]):
 
 
 def main():
-    run_name = os.getenv("RUN_NAME", 'phi-3-mini-lora-text2sql-default')
+    run_name = os.getenv("RUN_NAME", 'phi-3-text2sql-default')
     config = {
         "num_train_epochs": 1,
         "subsample": None,
