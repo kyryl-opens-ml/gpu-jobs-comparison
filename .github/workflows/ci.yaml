@@ -40,17 +40,6 @@ jobs:
         with:
           images: ghcr.io/kyryl-opens-ml/gpu-jobs-comparison
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
@@ -59,6 +48,4 @@ jobs:
           tags: |
             ${{ steps.meta.outputs.tags }}
             ghcr.io/pickfordai/pickford-studio:latest
-          labels: ${{ steps.meta.outputs.labels }}          
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache          
+          labels: ${{ steps.meta.outputs.labels }}
