@@ -1,13 +1,23 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: my-amazing-job
+  name: text2sql-training
 spec:
-  parallelism: 200
+  parallelism: 1
   template:
     spec:
       restartPolicy: Never
       containers:
-        - image: ghcr.io/kyryl-opens-ml/ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:pr-1
-          name: job-app-ml
-          
+        - image: ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:pr-1
+          name: text2sql-training
+          env:
+            - name: HF_TOKEN
+              value: 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
+            - name: WANDB_PROJECT
+              value: gpu-jobs-comparison
+            - name: WANDB_API_KEY
+              value: cb86168a2e8db7edb905da69307450f5e7867d66
+            - name: RUN_NAME
+              value: phi-3-mini-lora-text2sql-k8s-job
+          command: ["python"]
+          args: ["text2sql_training.py"]              

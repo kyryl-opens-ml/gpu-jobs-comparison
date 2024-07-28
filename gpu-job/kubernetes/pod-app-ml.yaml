@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-app-ml
+  name: text2sql-training
 spec:
   containers:
-    - image: ghcr.io/kyryl-opens-ml/ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:pr-1
-      name: pod-app-ml
+    - image: ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:pr-1
+      name: text2sql-training
       env:
         - name: HF_TOKEN
           value: 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
@@ -15,4 +15,6 @@ spec:
           value: cb86168a2e8db7edb905da69307450f5e7867d66
         - name: RUN_NAME
           value: phi-3-mini-lora-text2sql-k8s-pod
+      command: ["python"]
+      args: ["text2sql_training.py"]
   restartPolicy: Never
