@@ -1,23 +1,31 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: text2sql-training
+  name: phi-3-text2sql-k8s-job
 spec:
   parallelism: 1
   template:
     spec:
       restartPolicy: Never
       containers:
-        - image: ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:pr-1
-          name: text2sql-training
+        - image: ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:latest
+          name: training
           env:
             - name: HF_TOKEN
-              value: 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
+              valueFrom:
+                secretKeyRef:
+                  name: gpu-job-secrets
+                  key: HF_TOKEN
             - name: WANDB_PROJECT
               value: gpu-jobs-comparison
             - name: WANDB_API_KEY
-              value: cb86168a2e8db7edb905da69307450f5e7867d66
+              valueFrom:
+                secretKeyRef:
+                  name: gpu-job-secrets
+                  key: WANDB_API_KEY
             - name: RUN_NAME
-              value: phi-3-mini-lora-text2sql-k8s-job
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           command: ["python"]
-          args: ["text2sql_training.py"]              
+          args: ["text2sql_training.py"]

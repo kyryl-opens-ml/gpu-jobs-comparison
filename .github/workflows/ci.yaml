@@ -47,5 +47,5 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta.outputs.tags }}
-            ghcr.io/pickfordai/pickford-studio:latest
+            ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:latest
           labels: ${{ steps.meta.outputs.labels }}
