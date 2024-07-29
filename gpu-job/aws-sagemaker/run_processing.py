@@ -1,28 +1,29 @@
-import boto3
-from sagemaker.processing import Processor, ProcessingInput, ProcessingOutput
+from sagemaker.processing import Processor
+import os
 
-# Initialize the SageMaker session
-sagemaker_session = boto3.Session().client('sagemaker')
 
-# Define the processor
+env = {
+    "WANDB_PROJECT": os.getenv("WANDB_PROJECT"),
+    "WANDB_API_KEY": os.getenv("WANDB_API_KEY"),
+    "HF_TOKEN": os.getenv("HF_TOKEN"),
+    "RUN_NAME": os.getenv("RUN_NAME"),
+}
+
+sagemaker_role_arn = f"arn:aws:iam::{os.getenv('AWS_ACCOUNT_ID')}:role/sagemaker-execution-role"
+iamge_uri = f"{os.getenv('AWS_ACCOUNT_ID')}.dkr.ecr.{os.getenv('AWS_DEFAULT_REGION')}.amazonaws.com/gpu-jobs-comparison:latest"
+
 processor = Processor(
-    role='YourSageMakerRoleArn',  # Replace with your SageMaker role ARN
-    image_uri='ghcr.io/kyryl-opens-ml/gpu-jobs-comparison:pr-1',
+    role=sagemaker_role_arn,
+    image_uri=iamge_uri,
     instance_count=1,
-    instance_type='ml.p3.2xlarge',  # Choose an appropriate instance type
-    env={
-        'HF_TOKEN': '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',
-        'WANDB_PROJECT': 'gpu-jobs-comparison',
-        'WANDB_API_KEY': 'cb86168a2e8db7edb905da69307450f5e7867d66',
-        'RUN_NAME': 'phi-3-mini-lora-text2sql-sagemaker'
-    }
+    instance_type='ml.g5.2xlarge',
+    env=env
 )
 
 # Define processing inputs and outputs (if any)
 processing_inputs = []
 processing_outputs = []
 
-# Run the processing job
 processor.run(
     inputs=processing_inputs,
     outputs=processing_outputs,

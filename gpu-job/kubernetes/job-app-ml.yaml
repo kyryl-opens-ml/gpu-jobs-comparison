@@ -29,3 +29,6 @@ spec:
                   fieldPath: metadata.name
           command: ["python"]
           args: ["text2sql_training.py"]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
