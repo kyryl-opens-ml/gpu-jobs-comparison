@@ -1,5 +1,18 @@
 # gpu-jobs-comparison
 
+## TLDR
+
+![alt text](./docs/result.png)
+
+
+| Approach  | Setup effort | Dev UX | Scalability | Price USD |
+|-----------|--------------|--------|-------------|-----------|
+| SSH       | 🛋️-⚖️         | 4/5    | 1/5         | ~2.43     |
+| Modal     | 🛋️           | 5/5    | 5/5         | ~1.65     |
+| K8S       | ⚖️-🏋️‍♂️     | 3/5    | 5/5         | ~2.43     |
+| SageMaker | ⚖️           | 3/5    | 5/5         | ~2.24     |
+
+
 ## Run SSH in VM
 
 ```bash
